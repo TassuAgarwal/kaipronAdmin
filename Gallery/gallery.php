@@ -2,7 +2,7 @@
 session_start();
 ini_set("display_errors", "1");
 error_reporting(1);
-include '../connection.php';
+include '../../connection.php';
 ?>
 
 <!DOCTYPE html>
@@ -28,10 +28,6 @@ include '../connection.php';
         padding: 40px;
     }
 
-   
-    
-
-
     .tz-gallery .row>div {
         padding: 2px;
     }
@@ -41,6 +37,7 @@ include '../connection.php';
         height: 17vw;
         border-radius: 5%;
     }
+
 </style>
 
 <body>
@@ -72,7 +69,7 @@ include '../connection.php';
                     ?>
 
                                 <div class="col-sm-12 col-md-4">
-                                    <img src="../Assets/images/<?php echo $image; ?>" alt="<?php echo $image; ?>">
+                                    <img src="../../Assets/images/gallery/<?php echo $image; ?>" alt="<?php echo $image; ?>">
                                 </div>
                             
                     <?php
@@ -82,12 +79,6 @@ include '../connection.php';
                     }
                     ?>
 
-                    <div class="col-sm-6 col-md-4">
-                        <img src="https://raw.githubusercontent.com/LeshikJanz/libraries/master/Related%20images/Bootstrap%20example/park.jpg" alt="Park">
-                    </div>
-                    <div class="col-sm-6 col-md-4">
-                        <img src="https://raw.githubusercontent.com/LeshikJanz/libraries/master/Related%20images/Bootstrap%20example/tunnel.jpg" alt="Tunnel">
-                    </div>
                 </div>
             </div>
         </main>
@@ -100,11 +91,4 @@ include '../connection.php';
 
 </html>
 
-
-
-<!-- 
-<button type="button"
-    onclick="deleteId(<?php echo $row['image_id']; ?>)" class="btn"
-    data-bs-toggle="modal" data-bs-target="#exampleModal">
-    <i class="bi bi-trash text-danger"></i>
-</button> -->
+ 

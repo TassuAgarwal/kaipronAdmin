@@ -1,8 +1,31 @@
 <?php
 session_start();
 ini_set("display_errors", "1");
-include '../connection.php';
 error_reporting(E_ALL);
+
+include '../../connection.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['username'], $_POST['password'])) {
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
+
+    $query = "SELECT username, email, password FROM admindata WHERE username = '$username' OR email = '$username'";
+    $res = mysqli_query($conn, $query);
+
+    if (mysqli_num_rows($res) === 1) {
+        $row = mysqli_fetch_assoc($res);;
+
+        if (password_verify($password, $row['password'])) {
+            $_SESSION["login_sess"] = 1;
+            header('Location: ../Dashboard/dashboard.php');
+            exit();
+        } else {
+            $_SESSION['error'] = "Invalid Password";
+        }
+    } else {
+        $_SESSION['error'] = "User Not Found";
+    }
+}
 ?>
 
 <!doctype html>
@@ -39,7 +62,7 @@ error_reporting(E_ALL);
     }
 
     .gradient-custom-2 {
-        background: linear-gradient(to right,rgb(216, 230, 188),rgb(186, 231, 186),rgb(197, 199, 237));
+        background: linear-gradient(to right, rgb(216, 230, 188), rgb(186, 231, 186), rgb(197, 199, 237));
     }
 
     input::placeholder {
@@ -77,31 +100,27 @@ error_reporting(E_ALL);
                     <div class="row g-0">
                         <div class="col-lg-6">
                             <div class="card-body p-md-5 mx-md-4">
-
-                                <?php
-                                if (isset($_SESSION['error'])) { ?>
-
+                                <?php if (isset($_SESSION['error'])): ?>
                                     <div class="alert alert-danger p-1 alert-dismissible fade show w-100" role="alert">
-                                        <strong>ERROR !</strong> <?php echo $_SESSION['error']; ?>
+                                        <strong>ERROR!</strong> <?= $_SESSION['error'];
+                                                                unset($_SESSION['error']); ?>
                                         <button type="button" class="btn-close p-2" data-bs-dismiss="alert" aria-label="Close"></button>
                                     </div>
-                                <?php
-                                    unset($_SESSION['error']);
-                                }
-                                ?>
+                                <?php endif; ?>
+
                                 <div class="text-center">
-                                    <img src="https://www.kaipron.com/gall/logo.png"
-                                        style="width: 155px;" alt="logo">
+                                    <img src="https://www.kaipron.com/gall/logo.png" style="width: 155px;" alt="logo">
                                     <h5 class="mb-2 pt-4" style="color:rgb(87, 107, 140);font-weight: 600">Welcome to Kaipron 👋</h5>
                                     <p class="mb-4 pb-2" style="font-size: 14px; color:rgb(115, 136, 153);">Please sign-in to your account</p>
                                 </div>
-                                <form action="../user/loginWork.php" id="form" method="POST">
-                                    <div data-mdb-input-init class="form-outline mb-4">
+
+                                <form action="" id="form" method="POST">
+                                    <div class="form-outline mb-4">
                                         <label class="form-label" for="loginName" id="label">EMAIL OR USERNAME</label>
                                         <input type="text" id="loginName" name="username" value="" class="form-control"
-                                            placeholder="Enter your email or username" />
-                                        <pre class="text-danger" id="errorEmail"></pre>
+                                            placeholder="Enter your email or username" required />
                                     </div>
+
                                     <div class="mb-3 form-password-toggle">
                                         <div class="d-flex justify-content-between">
                                             <label class="form-label mb-0 pb-0" for="password" id="label">PASSWORD</label>
@@ -111,22 +130,20 @@ error_reporting(E_ALL);
                                         </div>
                                         <div class="input-group input-group-merge">
                                             <input type="password" id="loginPassword" class="form-control" name="password"
-                                                placeholder="············" aria-describedby="password">
+                                                placeholder="············" required>
                                             <span class="input-group-text cursor-pointer"><i id="passwordIcon" onclick="Password()"
                                                     class="fa-regular text-muted fa-eye-slash"></i></span>
                                         </div>
-                                        <pre class="text-danger" id="errorPass"></pre>
                                     </div>
 
                                     <input class="mb-4" type="checkbox"> Remember Me
 
-                                    <button type="submit" name="Subb" data-mdb-button-init data-mdb-ripple-init id="btn"
+                                    <button type="submit" name="Subb"
                                         class="btn text-dark w-100 gradient-custom-2 btn-block mb-4">Sign in
                                     </button>
 
-                                    <div class="text-center text-muted mb-0 ">
-                                        <p>New on our Platform ? <a href="register.php"
-                                                style="text-decoration:none; color:#299e11;">Register here</a></p>
+                                    <div class="text-center text-muted mb-0">
+                                        <p>New on our Platform? <a href="register.php" style="text-decoration:none; color:#299e11;">Register here</a></p>
                                     </div>
                                 </form>
                             </div>

@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['login_sess'])) {
+    header("Location: user/login.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,13 +18,13 @@
     <link href='https://unpkg.com/boxicons@2.1.4/dist/boxicons.js' rel='stylesheet'>
 
     <!-- My CSS -->
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
 
     <title>AdminHub</title>
 </head>
 
 <body>
-    <?php include '../Layout/layout.php' ?>
+    <?php include 'Layout/layout.php' ?>
 
     <section id="content">
 
@@ -50,7 +58,7 @@
                     </span>
                 </li>
                 <li>
-                    <i style="background:#ced0f8; color: #252fe1;" class='bx bxs-dollar-circle'></i>
+                    <i class='bx bxs-dollar-circle' style="background:#ced0f8; color: #252fe1;"></i>
                     <span class="text">
                         <h3>100%</h3>
                         <p>Valid Prices</p>
