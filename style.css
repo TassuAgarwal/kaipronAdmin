@@ -49,10 +49,12 @@ body {
 }
 
 /* SIDEBAR */
+
 #sidebar {
   position: fixed;
   top: 0;
   left: 0;
+  /* left: -100%; */
   width: 220px;
   height: 100%;
   background: var(--light);
@@ -68,10 +70,19 @@ body {
 #sidebar.hide {
   width: 60px;
 }
+
+#sidebar.show {
+  left: 0;
+}
+
+#content.shifted {
+  margin-left: 220px;
+}
+
 #sidebar .brand {
   font-size: 24px;
   font-weight: 700;
-  height: 56px;
+  height: 8vw;
   display: flex;
   align-items: center;
   color: var(--blue);
@@ -83,14 +94,13 @@ body {
   padding-bottom: 20px;
   box-sizing: content-box;
 }
-#sidebar .brand .bx {
-  min-width: 60px;
-  display: flex;
-  justify-content: center;
+
+.brand img {
+  margin: 30px;
+  width: 12vw;
 }
 #sidebar .side-menu {
   width: 100%;
-  margin-top: 48px;
 }
 #sidebar .side-menu li {
   height: 48px;
@@ -438,6 +448,19 @@ body.dark #content nav .profile-menu li a {
 /* NAVBAR */
 
 /* MAIN */
+
+#menu-toggle {
+  display: none;
+  cursor: pointer;
+}
+
+/* Show toggle button only on screens 768px or less */
+@media screen and (max-width: 768px) {
+  #menu-toggle {
+    display: inline-block;
+  }
+}
+
 #content main {
   width: 100%;
   padding: 36px 24px;
@@ -685,32 +708,77 @@ body.dark #content nav .profile-menu li a {
   text-decoration: underline;
 }
 
-/* Media Query for Smaller Screens */
+/* Tablets and below (≤768px) */
 @media screen and (max-width: 768px) {
-  /* Reduce width of notification and profile menu */
-  #content nav .notification-menu,
-  #content nav .profile-menu {
-    width: 180px;
-  }
+  /* Sidebar behavior */
   #sidebar {
     width: 200px;
+    left: -100%;
+    transition: left 0.3s ease;
   }
 
+  #sidebar.show {
+    left: 0;
+  }
+
+  #sidebar.hide {
+    width: 0;
+  }
+
+  /* Content shift */
   #content {
-    width: calc(100% - 60px);
-    left: 200px;
+    width: 100%;
+    left: 0;
+  }
+
+  #sidebar.hide ~ #content {
+    width: 100%;
+    left: 0;
+  }
+
+  /* Navigation adjustments */
+  #content nav {
+    justify-content: space-between;
+    padding: 0 16px;
+    gap: 12px;
+  }
+
+  #content nav .form-input {
+    display: none;
+  }
+
+  #content nav .notification,
+  #content nav .profile {
+    margin-left: auto;
+  }
+
+  #content nav .notification-menu,
+  #content nav .profile-menu {
+    width: 90vw;
+    right: 10px;
   }
 
   #content nav .nav-link {
     display: none;
   }
+
+  /* Main section padding and heading */
+  #content main {
+    padding: 20px 16px;
+  }
+
+  #content main .head-title h1 {
+    font-size: 24px;
+  }
 }
 
+/* Phones and small devices (≤576px) */
 @media screen and (max-width: 576px) {
   #content nav .notification-menu,
   #content nav .profile-menu {
     width: 150px;
   }
+
   #content nav form .form-input input {
     display: none;
   }
@@ -719,7 +787,7 @@ body.dark #content nav .profile-menu li a {
     width: auto;
     height: auto;
     background: transparent;
-    border-radius: none;
+    border-radius: 0;
     color: var(--dark);
   }
 
@@ -727,6 +795,7 @@ body.dark #content nav .profile-menu li a {
     display: block;
     width: 100%;
   }
+
   #content nav form.show .form-input button {
     width: 36px;
     height: 100%;
@@ -744,12 +813,8 @@ body.dark #content nav .profile-menu li a {
     grid-template-columns: 1fr;
   }
 
-  #content main .table-data .head {
-    min-width: 420px;
-  }
-  #content main .table-data .order table {
-    min-width: 420px;
-  }
+  #content main .table-data .head,
+  #content main .table-data .order table,
   #content main .table-data .todo .todo-list {
     min-width: 420px;
   }

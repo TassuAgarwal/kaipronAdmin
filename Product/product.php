@@ -2,7 +2,7 @@
 session_start();
 ini_set("display_errors", "1");
 error_reporting(1);
-include '../connection.php';
+include '../../connection.php';
 ?>
 
 <!DOCTYPE html>
@@ -40,7 +40,7 @@ include '../connection.php';
 </style>
 
 <body>
-    <?php include '../Layout/layout.php' ?>
+    <?php include '../layout.php' ?>
 
     <section id="content">
 
@@ -88,7 +88,7 @@ include '../connection.php';
                             <td><?php echo  $serialNumber++ ?></td>
                             <td><?php echo $name; ?></td>
                             <td><?php echo $desc; ?></td>
-                            <td><img src="../Assets/images/<?php echo $image; ?>" height="80" width="80" alt="<?php echo $image; ?>"></td>
+                            <td><img src="../../Assets/images/products/<?php echo $image; ?>" height="80" width="80" alt="<?php echo $image; ?>"></td>
                             <td><?php echo $model; ?></td>
                             <td><?php echo $price; ?></td>
                             <td><?php echo $category; ?></td>

@@ -2,12 +2,12 @@
 session_start();
 ini_set("display_errors", "1");
 error_reporting(1);
-include '../connection.php';
+include '../../connection.php';
 
 if (isset($_POST['add_image'])) {
     $file = $_FILES['gallery_image']['tmp_name'];
     $file_name = $_FILES['gallery_image']['name'];
-    $folder = '../Assets/images/';
+    $folder = '../../Assets/images/gallery/';
 
     if (move_uploaded_file($file, $folder . $file_name)) {
 
@@ -124,7 +124,7 @@ if (isset($_POST['add_image'])) {
 <body>
 
     <?php
-    include('../Layout/layout.php'); ?>
+    include('../layout.php'); ?>
 
 
     <section id="content">

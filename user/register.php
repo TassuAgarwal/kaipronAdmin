@@ -1,6 +1,6 @@
 <?php
 ini_set("display_errors", "1");
-include '../connection.php';
+include '../../connection.php';
 ?>
 
 <!doctype html>
@@ -21,7 +21,6 @@ include '../connection.php';
     }
 
     body {
-        background-image: url('manali.jpg');
         background-size: cover;
         background-repeat: no-repeat;
         background-attachment: fixed;
@@ -38,7 +37,7 @@ include '../connection.php';
     }
 
     #btnn {
-        background: linear-gradient(to right,rgb(203, 222, 165),rgb(125, 218, 125),rgb(122, 127, 215));
+        background: linear-gradient(to right, rgb(203, 222, 165), rgb(125, 218, 125), rgb(122, 127, 215));
     }
 </style>
 
@@ -59,28 +58,27 @@ include '../connection.php';
                                 <?php
                                 if (isset($_POST['register'])) {
                                     extract($_POST);
-                                    if (strlen($username) < 3) {
-                                        $error[] = 'Please enter atleast 5 letters';
-                                    }
-                                    if (strlen($username) > 20) {
-                                        $error[] = 'Max 20 letters allowed !!';
-                                    }
-                                    if (!preg_match("/^^[^0-9][a-z0-9]+([_-]?[a-z0-9])*$/", $username)) {
-                                        $error[] = 'Invalid username !! Please enter without space or any special letter';
+                                    $error = [];
+
+                                    if (strlen($username) < 5) {
+                                        $error[] = 'Please enter at least 5 letters.';
+                                    } elseif (strlen($username) > 20) {
+                                        $error[] = 'Max 20 letters allowed.';
+                                    } elseif (!preg_match("/^[^0-9][a-z0-9]+([_-]?[a-z0-9])*$/i", $username)) {
+                                        $error[] = 'Invalid username. No spaces or special characters.';
                                     }
                                     if (strlen($email) > 50) {
-                                        $error[] = 'Max 50 letters allowed !!';
+                                        $error[] = 'Max 50 letters allowed for email.';
                                     }
-                                    if (strlen($password) < 5) {
-                                        $error[] = 'Password must be 6 letter long';
+                                    if (strlen($password) < 6) {
+                                        $error[] = 'Password must be at least 6 characters.';
+                                    } elseif (strlen($password) > 20) {
+                                        $error[] = 'Password must not exceed 20 characters.';
+                                    } elseif ($password !== $confirmpass) {
+                                        $error[] = 'Passwords do not match.';
                                     }
-                                    if (strlen($password) > 20) {
-                                        $error[] = 'Max 20 letters allowed !!';
-                                    }
-                                    if ($password != $confirmpass) {
-                                        $error[] = 'Password do not match. Please enter again.';
-                                    }
-                                    $sql = "select * from adminData where (username='$username' or email='$email');";
+
+                                    $sql = "select * from adminData where (username='$username' or email='$email')";
                                     $result = mysqli_query($conn, $sql);
                                     if (mysqli_num_rows($result) > 0) {
                                         $row = mysqli_fetch_assoc($result);
@@ -92,10 +90,9 @@ include '../connection.php';
                                             $error[] = 'Email already Exists';
                                         }
                                     }
-                                    if (!isset($error)) {
-                                        $options = array("cost" => 4);
-                                        $password = password_hash($password, PASSWORD_BCRYPT, $options);
-                                        $res = mysqli_query($conn, "Insert into adminData(username,email,password,confirm_password) values ('" . $username . "','" . $email . "','" . $password . "','" . $confirmpass . "')");
+                                    if (empty($error)) {
+                                        $hashedPassword = password_hash($password, PASSWORD_BCRYPT, ["cost" => 10]);
+                                        $res = mysqli_query($conn, "Insert into adminData(username,email,password) values ('" . $username . "','" . $email . "','" . $hashedPassword . "')");
 
                                         if ($res) {
                                             $done = 1;
@@ -111,6 +108,16 @@ include '../connection.php';
                                     <h2>You have registered Successfully <a href="login.php">Login here</a></h2>
 
                                 <?php } else { ?>
+
+                                    <?php
+                                    if (!empty($error)) {
+                                        echo '<div class="alert alert-danger"><ul>';
+                                        foreach ($error as $err) {
+                                            echo "<li>$err</li>";
+                                        }
+                                        echo '</ul></div>';
+                                    }
+                                    ?>
 
                                     <form method="POST">
                                         <div class="d-flex flex-row align-items-center mb-4">
@@ -134,18 +141,14 @@ include '../connection.php';
                                         <div class="d-flex flex-row align-items-center mb-4">
                                             <div data-mdb-input-init class="form-outline flex-fill mb-0">
                                                 <label id="label" class="form-label">Password</label>
-                                                <input type="password" name="password" required value="<?php if (isset($error)) {
-                                                                                                            echo $password;
-                                                                                                        } ?>" class="form-control" required />
+                                                <input class="form-control" type="password" name="password" required />
                                             </div>
                                         </div>
 
                                         <div class="d-flex flex-row align-items-center mb-4">
                                             <div data-mdb-input-init class="form-outline flex-fill mb-0">
                                                 <label id="label" class="form-label">Confirm password</label>
-                                                <input type="password" name="confirmpass" required value="<?php if (isset($error)) {
-                                                                                                                echo $confirmpass;
-                                                                                                            } ?>" class="form-control" required />
+                                                <input class="form-control" type="password" name="confirmpass" required />
                                             </div>
                                         </div>
 
@@ -166,115 +169,6 @@ include '../connection.php';
 
 
     </div>
-    <!-- 
-    <?php
-
-    if (isset($error)) {
-        foreach ($error as $errorr)
-            echo '<script>alert("' . $errorr . '")</script>';
-    }
-    ?> -->
-
-
-    <!-- <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script>
-
-        $(document).ready(function () {
-            $(document).on('click', '#btn', function () { 
-                var username = $('#loginName').val();
-                var password = $('#loginPassword').val();
-            });
-        })  
-
-
-        // Document is ready 
-        $(document).ready(function () {
-
-            // Validate Username 
-            $("#usercheck").hide();
-            let usernameError = true;
-            $("#usernames").keyup(function () {
-                validateUsername();
-            });
-
-            function validateUsername() {
-                let usernameValue = $("#usernames").val();
-                if (usernameValue.length == "") {
-                    $("#usercheck").show();
-                    usernameError = false;
-                    return false;
-                } else if (usernameValue.length < 3 || usernameValue.length > 10) {
-                    $("#usercheck").show();
-                    $("#usercheck").html("**length of username must be between 3 and 10");
-                    usernameError = false;
-                    return false;
-                } else {
-                    $("#usercheck").hide();
-                }
-            }
-
-            // Validate Email 
-            const email = document.getElementById("email");
-            email.addEventListener("blur", () => {
-                let regex =
-                    /^([_\-\.0-9a-zA-Z]+)@([_\-\.0-9a-zA-Z]+)\.([a-zA-Z]){2,7}$/;
-                let s = email.value;
-                if (regex.test(s)) {
-                    email.classList.remove("is-invalid");
-                    emailError = true;
-                } else {
-                    email.classList.add("is-invalid");
-                    emailError = false;
-                }
-            });
-
-            // Validate Password 
-            $("#passcheck").hide();
-            let passwordError = true;
-            $("#password").keyup(function () {
-                validatePassword();
-            });
-            function validatePassword() {
-                let passwordValue = $("#password").val();
-                if (passwordValue.length == "") {
-                    $("#passcheck").show();
-                    passwordError = false;
-                    return false;
-                }
-                if (passwordValue.length < 3 || passwordValue.length > 10) {
-                    $("#passcheck").show();
-                    $("#passcheck").html(
-                        "**length of your password must be between 3 and 10"
-                    );
-                    $("#passcheck").css("color", "red");
-                    passwordError = false;
-                    return false;
-                } else {
-                    $("#passcheck").hide();
-                }
-            }
-
-
-
-            // Submit button 
-            $("#submitbtn").click(function () {
-                validateUsername();
-                validatePassword();
-                validateConfirmPassword();
-                validateEmail();
-                if (
-                    usernameError == true &&
-                    passwordError == true &&
-                    confirmPasswordError == true &&
-                    emailError == true
-                ) {
-                    return true;
-                } else {
-                    return false;
-                }
-            });
-        });
-    </script> -->
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
